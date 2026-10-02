@@ -6987,7 +6987,7 @@ function fpRenderGraph(){
   }
   function setCap(i,instant){
     var s=STAGES[i], cap=at.querySelector('.at-cap');
-    cap.querySelector('.k').textContent='Stage '+String(i).padStart(2,'0')+' / 10 · Act '+s.a;
+    cap.querySelector('.k').textContent='Stage '+String(i).padStart(2,'0')+' / 03 · Act '+s.a;
     if(instant||RM) cap.querySelector('.t').textContent=s.n; else scramble(cap.querySelector('.t'),s.n);
     cap.querySelector('.d').textContent=s.d;
     $('atGo').innerHTML='Enter · '+s.k+' <span aria-hidden="true">→</span>';
@@ -7158,7 +7158,7 @@ function fpRenderGraph(){
     if(document.fonts&&document.fonts.load){ Promise.all([document.fonts.load('900 118px Doto'),document.fonts.load('26px "Space Mono"'),document.fonts.load('24px "Space Grotesk"')]).then(redrawCards,function(){}); }
 
     /* input: virtual scroll */
-    var target=0, prog=0, lastInput=0, MAXP=2.45+9*0.5+0.25;
+    var target=0, prog=0, lastInput=0, MAXP=2.45+(N-1)*0.5+0.25;
     function clampT(){ target=Math.max(0,Math.min(MAXP,target)); }
     function input(dv){ target+=dv; clampT(); lastInput=performance.now(); }
     var spin=0, spinV=0;
@@ -7219,7 +7219,7 @@ function fpRenderGraph(){
     function frame(t){
       var dt=Math.min(0.05,t-(last||t)); last=t;
       // snap to nearest card when idle in carousel
-      if(prog>2.3 && performance.now()-lastInput>700){ var ci=Math.round((target-2.45)/0.5); ci=Math.max(0,Math.min(9,ci)); target=lerp(target,2.45+ci*0.5,1-Math.pow(0.93,dt*60)); }
+      if(prog>2.3 && performance.now()-lastInput>700){ var ci=Math.round((target-2.45)/0.5); ci=Math.max(0,Math.min(N-1,ci)); target=lerp(target,2.45+ci*0.5,1-Math.pow(0.93,dt*60)); }
       spin+=spinV*dt*60; spinV*=Math.pow(0.94,dt*60); if(Math.abs(spinV)>0.25) spinV=0.25*Math.sign(spinV);
       prog=lerp(prog,target,RM?1:1-Math.pow(0.925,dt*60));
       mouseS.lerp(mouse,1-Math.pow(0.94,dt*60));
@@ -7248,7 +7248,7 @@ function fpRenderGraph(){
       // carousel
       var af=Math.max(0,(p-2.45)/0.5);
       carousel.rotation.y=-af*Math.PI*2/N;
-      var ai=Math.max(1,Math.min(10,Math.round(af)+1));
+      var ai=Math.max(1,Math.min(N,Math.round(af)+1));
       if(ai!==activeIdx && p>2.2){ activeIdx=ai; setCap(ai); }
       ray.setFromCamera(mouse,camera); var hh=p>2.3?ray.intersectObjects(cards)[0]:null; var ho=hh?hh.object:null;
       if(ho!==hover){ hover=ho; at.style.cursor=hover?'pointer':''; }
